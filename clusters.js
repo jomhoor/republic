@@ -10,16 +10,31 @@
   var EDGE_DIST      = 58;
   var EDGE_OPACITY   = 0.14;
 
-  /* ── Slide data ── */
+  /* ── Theme-aware color palettes ── */
+  // Keys used in slide data; mapped to actual hex per theme
+  var COLOR_PALETTES = {
+    dark: { A: '#34D399', B: '#60A5FA', C: '#FBBF24' },   // bright on dark bg
+    light: { A: '#059669', B: '#2563EB', C: '#B45309' },   // deeper on light bg
+  };
+
+  function currentPalette() {
+    var isFA  = document.documentElement.lang === 'fa';
+    var theme = document.documentElement.getAttribute('data-theme');
+    // EN default = dark, FA default = light
+    var isDark = isFA ? (theme === 'dark') : (theme !== 'light');
+    return isDark ? COLOR_PALETTES.dark : COLOR_PALETTES.light;
+  }
+
+  /* ── Slide data (colors use palette keys A/B/C) ── */
   var SLIDES = {
     en: [
       {
         topic: 'Healthcare Reform',
         meta: '2,847 participants · 94 statements',
         clusters: [
-          { label: 'Universal\nAccess',   color: '#0EBB90', cx: 0.22, cy: 0.32, spread: 0.13, weight: 0.38 },
-          { label: 'Mixed\nSystem',       color: '#8CDAF5', cx: 0.55, cy: 0.62, spread: 0.11, weight: 0.30 },
-          { label: 'Private-Led',         color: '#FEEB34', cx: 0.80, cy: 0.28, spread: 0.09, weight: 0.22 },
+          { label: 'Universal\nAccess',   colorKey: 'A', cx: 0.22, cy: 0.32, spread: 0.13, weight: 0.38 },
+          { label: 'Mixed\nSystem',       colorKey: 'B', cx: 0.55, cy: 0.62, spread: 0.11, weight: 0.30 },
+          { label: 'Private-Led',         colorKey: 'C', cx: 0.80, cy: 0.28, spread: 0.09, weight: 0.22 },
         ],
         consensus: '78% agree: "Essential medicines must be accessible regardless of income"',
       },
@@ -27,9 +42,9 @@
         topic: 'Education Policy',
         meta: '4,123 participants · 127 statements',
         clusters: [
-          { label: 'Secular\nReform',     color: '#8CDAF5', cx: 0.26, cy: 0.30, spread: 0.12, weight: 0.35 },
-          { label: 'Traditional',         color: '#FEEB34', cx: 0.76, cy: 0.28, spread: 0.10, weight: 0.25 },
-          { label: 'Consensus\nZone',     color: '#0EBB90', cx: 0.50, cy: 0.68, spread: 0.13, weight: 0.35 },
+          { label: 'Secular\nReform',     colorKey: 'B', cx: 0.26, cy: 0.30, spread: 0.12, weight: 0.35 },
+          { label: 'Traditional',         colorKey: 'C', cx: 0.76, cy: 0.28, spread: 0.10, weight: 0.25 },
+          { label: 'Consensus\nZone',     colorKey: 'A', cx: 0.50, cy: 0.68, spread: 0.13, weight: 0.35 },
         ],
         consensus: '84% agree: "Critical thinking should be core curriculum"',
       },
@@ -37,9 +52,9 @@
         topic: 'Economic Freedom',
         meta: '3,561 participants · 108 statements',
         clusters: [
-          { label: 'Open\nMarket',        color: '#FEEB34', cx: 0.24, cy: 0.35, spread: 0.11, weight: 0.30 },
-          { label: 'Social\nDemocracy',   color: '#0EBB90', cx: 0.52, cy: 0.28, spread: 0.12, weight: 0.35 },
-          { label: 'Cooperative\nModel',  color: '#8CDAF5', cx: 0.76, cy: 0.62, spread: 0.10, weight: 0.25 },
+          { label: 'Open\nMarket',        colorKey: 'C', cx: 0.24, cy: 0.35, spread: 0.11, weight: 0.30 },
+          { label: 'Social\nDemocracy',   colorKey: 'A', cx: 0.52, cy: 0.28, spread: 0.12, weight: 0.35 },
+          { label: 'Cooperative\nModel',  colorKey: 'B', cx: 0.76, cy: 0.62, spread: 0.10, weight: 0.25 },
         ],
         consensus: '71% agree: "Banking system must be transparent and accountable"',
       },
@@ -47,9 +62,9 @@
         topic: 'Digital Rights',
         meta: '5,290 participants · 156 statements',
         clusters: [
-          { label: 'Privacy\nFirst',      color: '#0EBB90', cx: 0.28, cy: 0.38, spread: 0.14, weight: 0.40 },
-          { label: 'Open\nInternet',      color: '#8CDAF5', cx: 0.72, cy: 0.32, spread: 0.12, weight: 0.35 },
-          { label: 'Regulated',           color: '#FEEB34', cx: 0.55, cy: 0.72, spread: 0.08, weight: 0.15 },
+          { label: 'Privacy\nFirst',      colorKey: 'A', cx: 0.28, cy: 0.38, spread: 0.14, weight: 0.40 },
+          { label: 'Open\nInternet',      colorKey: 'B', cx: 0.72, cy: 0.32, spread: 0.12, weight: 0.35 },
+          { label: 'Regulated',           colorKey: 'C', cx: 0.55, cy: 0.72, spread: 0.08, weight: 0.15 },
         ],
         consensus: '92% agree: "Internet access is a fundamental right"',
       },
@@ -57,9 +72,9 @@
         topic: 'Environmental Law',
         meta: '2,198 participants · 73 statements',
         clusters: [
-          { label: 'Strong\nRegulation',  color: '#0EBB90', cx: 0.28, cy: 0.34, spread: 0.13, weight: 0.40 },
-          { label: 'Market\nIncentives',  color: '#FEEB34', cx: 0.74, cy: 0.36, spread: 0.10, weight: 0.25 },
-          { label: 'Local\nAction',       color: '#8CDAF5', cx: 0.52, cy: 0.70, spread: 0.11, weight: 0.30 },
+          { label: 'Strong\nRegulation',  colorKey: 'A', cx: 0.28, cy: 0.34, spread: 0.13, weight: 0.40 },
+          { label: 'Market\nIncentives',  colorKey: 'C', cx: 0.74, cy: 0.36, spread: 0.10, weight: 0.25 },
+          { label: 'Local\nAction',       colorKey: 'B', cx: 0.52, cy: 0.70, spread: 0.11, weight: 0.30 },
         ],
         consensus: '88% agree: "Water resources must be managed as public commons"',
       },
@@ -69,9 +84,9 @@
         topic: 'اصلاح نظام بهداشت',
         meta: '۲٬۸۴۷ مشارکت‌کننده · ۹۴ گزاره',
         clusters: [
-          { label: 'دسترسی\nهمگانی',     color: '#0EBB90', cx: 0.22, cy: 0.32, spread: 0.13, weight: 0.38 },
-          { label: 'نظام\nترکیبی',       color: '#8CDAF5', cx: 0.55, cy: 0.62, spread: 0.11, weight: 0.30 },
-          { label: 'بخش خصوصی',           color: '#FEEB34', cx: 0.80, cy: 0.28, spread: 0.09, weight: 0.22 },
+          { label: 'دسترسی\nهمگانی',     colorKey: 'A', cx: 0.22, cy: 0.32, spread: 0.13, weight: 0.38 },
+          { label: 'نظام\nترکیبی',       colorKey: 'B', cx: 0.55, cy: 0.62, spread: 0.11, weight: 0.30 },
+          { label: 'بخش خصوصی',           colorKey: 'C', cx: 0.80, cy: 0.28, spread: 0.09, weight: 0.22 },
         ],
         consensus: '٪۷۸ موافق: «داروهای ضروری باید بدون توجه به درآمد در دسترس باشند»',
       },
@@ -79,9 +94,9 @@
         topic: 'سیاست آموزشی',
         meta: '۴٬۱۲۳ مشارکت‌کننده · ۱۲۷ گزاره',
         clusters: [
-          { label: 'اصلاح\nسکولار',       color: '#8CDAF5', cx: 0.26, cy: 0.30, spread: 0.12, weight: 0.35 },
-          { label: 'سنتی',                color: '#FEEB34', cx: 0.76, cy: 0.28, spread: 0.10, weight: 0.25 },
-          { label: 'منطقه\nتوافق',        color: '#0EBB90', cx: 0.50, cy: 0.68, spread: 0.13, weight: 0.35 },
+          { label: 'اصلاح\nسکولار',       colorKey: 'B', cx: 0.26, cy: 0.30, spread: 0.12, weight: 0.35 },
+          { label: 'سنتی',                colorKey: 'C', cx: 0.76, cy: 0.28, spread: 0.10, weight: 0.25 },
+          { label: 'منطقه\nتوافق',        colorKey: 'A', cx: 0.50, cy: 0.68, spread: 0.13, weight: 0.35 },
         ],
         consensus: '٪۸۴ موافق: «تفکر انتقادی باید در هسته برنامه درسی باشد»',
       },
@@ -89,9 +104,9 @@
         topic: 'آزادی اقتصادی',
         meta: '۳٬۵۶۱ مشارکت‌کننده · ۱۰۸ گزاره',
         clusters: [
-          { label: 'بازار\nآزاد',         color: '#FEEB34', cx: 0.24, cy: 0.35, spread: 0.11, weight: 0.30 },
-          { label: 'سوسیال\nدموکراسی',    color: '#0EBB90', cx: 0.52, cy: 0.28, spread: 0.12, weight: 0.35 },
-          { label: 'تعاونی',              color: '#8CDAF5', cx: 0.76, cy: 0.62, spread: 0.10, weight: 0.25 },
+          { label: 'بازار\nآزاد',         colorKey: 'C', cx: 0.24, cy: 0.35, spread: 0.11, weight: 0.30 },
+          { label: 'سوسیال\nدموکراسی',    colorKey: 'A', cx: 0.52, cy: 0.28, spread: 0.12, weight: 0.35 },
+          { label: 'تعاونی',              colorKey: 'B', cx: 0.76, cy: 0.62, spread: 0.10, weight: 0.25 },
         ],
         consensus: '٪۷۱ موافق: «سیستم بانکی باید شفاف و پاسخگو باشد»',
       },
@@ -99,9 +114,9 @@
         topic: 'حقوق دیجیتال',
         meta: '۵٬۲۹۰ مشارکت‌کننده · ۱۵۶ گزاره',
         clusters: [
-          { label: 'حریم\nخصوصی',          color: '#0EBB90', cx: 0.28, cy: 0.38, spread: 0.14, weight: 0.40 },
-          { label: 'اینترنت\nآزاد',        color: '#8CDAF5', cx: 0.72, cy: 0.32, spread: 0.12, weight: 0.35 },
-          { label: 'تنظیم‌شده',            color: '#FEEB34', cx: 0.55, cy: 0.72, spread: 0.08, weight: 0.15 },
+          { label: 'حریم\nخصوصی',          colorKey: 'A', cx: 0.28, cy: 0.38, spread: 0.14, weight: 0.40 },
+          { label: 'اینترنت\nآزاد',        colorKey: 'B', cx: 0.72, cy: 0.32, spread: 0.12, weight: 0.35 },
+          { label: 'تنظیم‌شده',            colorKey: 'C', cx: 0.55, cy: 0.72, spread: 0.08, weight: 0.15 },
         ],
         consensus: '٪۹۲ موافق: «دسترسی به اینترنت یک حق اساسی است»',
       },
@@ -109,9 +124,9 @@
         topic: 'قوانین محیط زیست',
         meta: '۲٬۱۹۸ مشارکت‌کننده · ۷۳ گزاره',
         clusters: [
-          { label: 'مقررات\nقوی',          color: '#0EBB90', cx: 0.28, cy: 0.34, spread: 0.13, weight: 0.40 },
-          { label: 'مشوق‌های\nبازار',      color: '#FEEB34', cx: 0.74, cy: 0.36, spread: 0.10, weight: 0.25 },
-          { label: 'اقدام\nمحلی',          color: '#8CDAF5', cx: 0.52, cy: 0.70, spread: 0.11, weight: 0.30 },
+          { label: 'مقررات\nقوی',          colorKey: 'A', cx: 0.28, cy: 0.34, spread: 0.13, weight: 0.40 },
+          { label: 'مشوق‌های\nبازار',      colorKey: 'C', cx: 0.74, cy: 0.36, spread: 0.10, weight: 0.25 },
+          { label: 'اقدام\nمحلی',          colorKey: 'B', cx: 0.52, cy: 0.70, spread: 0.11, weight: 0.30 },
         ],
         consensus: '٪۸۸ موافق: «منابع آب باید به عنوان مشترکات عمومی مدیریت شوند»',
       },
@@ -127,6 +142,10 @@
   }
 
   function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function resolveColor(cl) {
+    return currentPalette()[cl.colorKey] || '#888';
+  }
 
   function hexToRGBA(hex, alpha) {
     var r = parseInt(hex.slice(1, 3), 16);
@@ -205,8 +224,25 @@
     // Auto-advance
     this._startAuto();
 
-    // Resize
-    window.addEventListener('resize', function () { self._resize(); });
+    // Resize (debounced)
+    this._resizeTimer = null;
+    var self = this;
+    function onResize() {
+      clearTimeout(self._resizeTimer);
+      self._resizeTimer = setTimeout(function () { self._resize(); }, 100);
+    }
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(onResize, 200);
+    });
+
+    // Watch for theme changes and re-apply colors
+    this._themeObs = new MutationObserver(function () {
+      self._recolorNodes();
+    });
+    this._themeObs.observe(document.documentElement, {
+      attributes: true, attributeFilter: ['data-theme']
+    });
   }
 
   ClusterAnimation.prototype._buildDOM = function () {
@@ -249,9 +285,12 @@
   };
 
   ClusterAnimation.prototype._resize = function () {
-    var w = this.el.clientWidth - 48; // account for parent padding
-    if (w < 200) w = 200;
-    var h = Math.max(260, Math.min(340, w * 0.7));
+    var style = getComputedStyle(this.el);
+    var padL = parseFloat(style.paddingLeft) || 0;
+    var padR = parseFloat(style.paddingRight) || 0;
+    var w = this.el.clientWidth - padL - padR;
+    if (w < 160) w = 160;
+    var h = Math.max(200, Math.min(340, w * 0.65));
 
     var dpr = window.devicePixelRatio || 1;
     this.canvas.width = w * dpr;
@@ -301,7 +340,7 @@
         self.nodes[idx].tx = nx;
         self.nodes[idx].ty = ny;
         self.nodes[idx].ci = ci;
-        self.nodes[idx].color = cl.color;
+        self.nodes[idx].color = resolveColor(cl);
         self.nodes[idx].top = 0.6 + Math.random() * 0.35;
 
         if (instant) {
@@ -333,6 +372,25 @@
     });
 
     this._resetAuto();
+  };
+
+  ClusterAnimation.prototype._recolorNodes = function () {
+    var slide = this.slides[this.cur];
+    var palette = currentPalette();
+    var idx = 0;
+    var remaining = TOTAL_NODES;
+    var self = this;
+
+    slide.clusters.forEach(function (cl, ci) {
+      var count = (ci === slide.clusters.length - 1)
+        ? remaining
+        : Math.round(TOTAL_NODES * cl.weight);
+      remaining -= count;
+      var color = palette[cl.colorKey] || '#888';
+      for (var i = 0; i < count && idx < TOTAL_NODES; i++, idx++) {
+        self.nodes[idx].color = color;
+      }
+    });
   };
 
   ClusterAnimation.prototype._next = function () {
@@ -378,17 +436,19 @@
 
     // ── Cluster glows ──
     slide.clusters.forEach(function (cl) {
+      var clColor = resolveColor(cl);
       var cx = cl.cx * W;
       var cy = cl.cy * H;
       var r = cl.spread * W * 1.8;
       var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-      grad.addColorStop(0, hexToRGBA(cl.color, 0.08));
-      grad.addColorStop(1, hexToRGBA(cl.color, 0));
+      grad.addColorStop(0, hexToRGBA(clColor, 0.08));
+      grad.addColorStop(1, hexToRGBA(clColor, 0));
       ctx.fillStyle = grad;
       ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
     });
 
     // ── Edges ──
+    var edgeDist = Math.max(30, EDGE_DIST * (W / 400));
     var nodes = this.nodes;
     for (var i = 0; i < nodes.length; i++) {
       var a = nodes[i];
@@ -399,8 +459,8 @@
         var ddx = a.dx - b.dx;
         var ddy = a.dy - b.dy;
         var dist = Math.sqrt(ddx * ddx + ddy * ddy);
-        if (dist < EDGE_DIST) {
-          var alpha = (1 - dist / EDGE_DIST) * EDGE_OPACITY * Math.min(a.op, b.op);
+        if (dist < edgeDist) {
+          var alpha = (1 - dist / edgeDist) * EDGE_OPACITY * Math.min(a.op, b.op);
           ctx.beginPath();
           ctx.moveTo(a.dx, a.dy);
           ctx.lineTo(b.dx, b.dy);
@@ -428,20 +488,25 @@
     ctx.textBaseline = 'middle';
 
     slide.clusters.forEach(function (cl) {
+      var clColor = resolveColor(cl);
       var lx = cl.cx * W;
       var ly = (cl.cy - cl.spread - 0.06) * H;
       var lines = cl.label.split('\n');
 
+      // Scale label size for small canvases
+      var labelSize = W < 280 ? 8 : 10;
+      var labelPad = W < 280 ? 12 : 18;
+
       // Measure
-      ctx.font = '600 10px ' + fontFamily;
+      ctx.font = '600 ' + labelSize + 'px ' + fontFamily;
       var maxW = 0;
       lines.forEach(function (line) {
         var m = ctx.measureText(line).width;
         if (m > maxW) maxW = m;
       });
 
-      var pillW = maxW + 18;
-      var lineH = 13;
+      var pillW = maxW + labelPad;
+      var lineH = labelSize + 3;
       var pillH = lines.length * lineH + 8;
       var px = lx - pillW / 2;
       var py = ly - pillH / 2;
@@ -454,10 +519,10 @@
 
       // Label text
       ctx.globalAlpha = 1;
-      ctx.fillStyle = cl.color;
-      ctx.font = '600 10px ' + fontFamily;
+      ctx.fillStyle = clColor;
+      ctx.font = '600 ' + labelSize + 'px ' + fontFamily;
       lines.forEach(function (line, li) {
-        ctx.fillText(line, lx, py + 10 + li * lineH);
+        ctx.fillText(line, lx, py + (labelSize * 0.7 + 3) + li * lineH);
       });
 
       ctx.globalAlpha = 1;

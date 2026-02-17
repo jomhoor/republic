@@ -164,6 +164,12 @@
     return 'rgba('+r+','+g+','+b+','+a+')';
   }
 
+  /* ── Persian digit converter ── */
+  var FA_DIGITS = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  function toFaNum(n) {
+    return String(n).replace(/[0-9]/g, function (d) { return FA_DIGITS[+d]; });
+  }
+
   /* ── Main Animation ── */
   function RankedPairsAnim(el) {
     this.el = el;
@@ -196,7 +202,15 @@
     }, { threshold: 0.15 });
     this._obs.observe(this.el);
 
-    window.addEventListener('resize', function () { self._resize(); });
+    this._resizeTimer = null;
+    function onResize() {
+      clearTimeout(self._resizeTimer);
+      self._resizeTimer = setTimeout(function () { self._resize(); }, 100);
+    }
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(onResize, 200);
+    });
   }
 
   RankedPairsAnim.prototype._buildDOM = function () {
@@ -216,7 +230,9 @@
   RankedPairsAnim.prototype._resize = function () {
     var box = this.el.getBoundingClientRect();
     var w = Math.min(box.width - 16, 760);
-    var h = Math.min(540, Math.max(360, w * 0.72));
+    if (w < 160) w = 160;
+    var minH = w < 400 ? 280 : 360;
+    var h = Math.min(540, Math.max(minH, w * 0.72));
     var dpr = window.devicePixelRatio || 1;
     this.canvas.width  = w * dpr;
     this.canvas.height = h * dpr;
@@ -301,8 +317,9 @@
     var isLight = this.isLight;
 
     // Layout: a single ballot card in the centre
-    var cardW = Math.min(280, W * 0.52);
-    var cardH = Math.min(380, H * 0.82);
+    var isNarrow = W < 400;
+    var cardW = isNarrow ? Math.min(W * 0.78, W - 32) : Math.min(280, W * 0.52);
+    var cardH = isNarrow ? Math.min(H * 0.88, H - 20) : Math.min(380, H * 0.82);
     var cx = W / 2, cy = H / 2;
     var cardX = cx - cardW / 2;
     var cardY = cy - cardH / 2;
@@ -314,16 +331,19 @@
     this._roundRect(ctx, cardX, cardY, cardW, cardH, 14);
 
     // Title at top of card
-    ctx.font = '700 ' + Math.max(14, cardW * 0.06) + 'px ' + font;
+    var titleFont = isNarrow ? Math.max(12, cardW * 0.055) : Math.max(14, cardW * 0.06);
+    ctx.font = '700 ' + titleFont + 'px ' + font;
     ctx.fillStyle = isLight ? 'rgba(30,58,107,0.7)' : 'rgba(255,255,255,0.6)';
     ctx.textAlign = 'center';
-    ctx.fillText(isFA ? 'برگه رای' : 'Your Ballot', cx, cardY + 30);
+    ctx.fillText(isFA ? 'برگه رای' : 'Your Ballot', cx, cardY + (isNarrow ? 24 : 30));
 
-    var slotH = Math.min(52, (cardH - 60) / 4 - 6);
-    var slotW = cardW - 36;
-    var slotX = cardX + 18;
-    var slotsTop = cardY + 50;
-    var slotGap = slotH + 10;
+    var slotPad = isNarrow ? 12 : 18;
+    var topOffset = isNarrow ? 38 : 50;
+    var slotH = Math.min(isNarrow ? 44 : 52, (cardH - topOffset - 10) / 4 - 6);
+    var slotW = cardW - slotPad * 2;
+    var slotX = cardX + slotPad;
+    var slotsTop = cardY + topOffset;
+    var slotGap = slotH + (isNarrow ? 7 : 10);
 
     var DRAG_CAND = 1; // Nashville / شیراز (eventual winner)
     var origOrder = [0, 1, 2, 3];
@@ -379,30 +399,34 @@
       this._roundRect(ctx, slotX, currentY + elevation, slotW, slotH, 8);
 
       // Drag handle dots
-      var dotsX = isFA ? slotX + slotW - 16 : slotX + 12;
+      var dotsX = isFA ? slotX + slotW - (isNarrow ? 12 : 16) : slotX + (isNarrow ? 8 : 12);
       var dotCY = currentY + elevation + slotH / 2;
+      var dotSpacing = isNarrow ? 5 : 7;
+      var dotR = isNarrow ? 1.5 : 2;
       ctx.fillStyle = hexRGBA(CAND_COLORS[candIdx], isHighlighted ? 0.7 : 0.35);
       for (var d = -1; d <= 1; d++) {
-        ctx.beginPath(); ctx.arc(dotsX, dotCY + d * 7, 2, 0, TAU); ctx.fill();
-        ctx.beginPath(); ctx.arc(dotsX + 7, dotCY + d * 7, 2, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(dotsX, dotCY + d * dotSpacing, dotR, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(dotsX + dotSpacing, dotCY + d * dotSpacing, dotR, 0, TAU); ctx.fill();
       }
 
       // Candidate name (use short names)
-      ctx.font = '700 ' + Math.max(14, slotH * 0.34) + 'px ' + font;
+      var nameFontSize = isNarrow ? Math.max(11, slotH * 0.30) : Math.max(14, slotH * 0.34);
+      ctx.font = '700 ' + nameFontSize + 'px ' + font;
       ctx.fillStyle = CAND_COLORS[candIdx];
       ctx.textAlign = 'center';
-      ctx.fillText(names[candIdx], cx, currentY + elevation + slotH / 2 + 5);
+      ctx.fillText(names[candIdx], cx, currentY + elevation + slotH / 2 + (isNarrow ? 3 : 5));
 
       // Rank numbers appear at the end
       if (tShowRanks > 0) {
         ctx.globalAlpha = itemAppear * tShowRanks;
         var finalSlot = finalOrder.indexOf(candIdx);
         var rankNumY = slotsTop + finalSlot * slotGap;
-        ctx.font = '800 ' + Math.max(14, slotH * 0.34) + 'px ' + font;
+        var rankFontSize = isNarrow ? Math.max(11, slotH * 0.30) : Math.max(14, slotH * 0.34);
+        ctx.font = '800 ' + rankFontSize + 'px ' + font;
         ctx.fillStyle = isLight ? 'rgba(30,58,107,0.75)' : 'rgba(255,255,255,0.7)';
         ctx.textAlign = isFA ? 'left' : 'right';
         var rankLabelX = isFA ? slotX + 10 : slotX + slotW - 10;
-        var rankLabel = this.isFA ? '.' + (finalSlot + 1) : (finalSlot + 1) + '.';
+        var rankLabel = this.isFA ? '-' + toFaNum(finalSlot + 1) : (finalSlot + 1) + '.';
         ctx.fillText(rankLabel, rankLabelX, rankNumY + slotH / 2 + 5);
       }
     }
@@ -428,7 +452,7 @@
     this.statusEl.textContent = this.L.stepBallots;
     var t = this.phaseT;
     var groups = BALLOT_GROUPS;
-    var isNarrow = W < 520;
+    var isNarrow = W < 400;
 
     // On narrow screens use 2×2 grid, otherwise 4 columns
     if (isNarrow) {
@@ -500,7 +524,7 @@
         ctx.font = '700 ' + nameFont + 'px ' + font;
         ctx.fillStyle = CAND_COLORS[candIdx];
         ctx.textAlign = 'center';
-        ctx.fillText(this.isFA ? this.L.candidatesShort[candIdx] + '  .' + (r + 1) : (r + 1) + '. ' + this.L.candidatesShort[candIdx], x + cardW / 2, ly + lineH / 2 + 1);
+        ctx.fillText(this.isFA ? this.L.candidatesShort[candIdx] + '  -' + toFaNum(r + 1) : (r + 1) + '. ' + this.L.candidatesShort[candIdx], x + cardW / 2, ly + lineH / 2 + 1);
       }
 
       ctx.restore();
@@ -568,7 +592,7 @@
         ctx.font = '700 ' + nameFont + 'px ' + font;
         ctx.fillStyle = CAND_COLORS[candIdx];
         ctx.textAlign = 'center';
-        ctx.fillText(this.isFA ? this.L.candidatesShort[candIdx] + '  .' + (r + 1) : (r + 1) + '. ' + this.L.candidatesShort[candIdx], x + cardW / 2, ly + lineH / 2 + 1);
+        ctx.fillText(this.isFA ? this.L.candidatesShort[candIdx] + '  -' + toFaNum(r + 1) : (r + 1) + '. ' + this.L.candidatesShort[candIdx], x + cardW / 2, ly + lineH / 2 + 1);
       }
 
       ctx.restore();
@@ -580,11 +604,13 @@
   RankedPairsAnim.prototype._drawTally = function (ctx, W, H, font) {
     this.statusEl.textContent = this.L.stepTally;
     var t = this.phaseT;
+    var isNarrow = W < 400;
 
     var pairs = this.pairs;
-    var rowH = Math.min(40, (H - 40) / pairs.length);
+    var rowH = Math.min(isNarrow ? 34 : 40, (H - 40) / pairs.length);
     var startY = (H - pairs.length * rowH) / 2;
     var midX = W / 2;
+    var fontSize = isNarrow ? Math.max(11, W * 0.030) : Math.max(14, W * 0.024);
 
     for (var i = 0; i < pairs.length; i++) {
       var appear = Math.max(0, Math.min(1, (t - i * 0.1) / 0.2));
@@ -595,25 +621,31 @@
       var p = pairs[i];
 
       // Winner side
-      ctx.font = '700 ' + Math.max(14, W * 0.024) + 'px ' + font;
+      ctx.font = '700 ' + fontSize + 'px ' + font;
       ctx.textAlign = 'right';
       ctx.fillStyle = CAND_COLORS[p.winner];
-      ctx.fillText(this.L.candidates[p.winner] + ' ' + p.winPct + '%', midX - 24, y + rowH * 0.6);
+      var winLabel = isNarrow
+        ? (this.isFA ? '٪' + toFaNum(p.winPct) + ' ' + this.L.candidatesShort[p.winner] : this.L.candidatesShort[p.winner] + ' ' + p.winPct + '%')
+        : (this.isFA ? '٪' + toFaNum(p.winPct) + ' ' + this.L.candidates[p.winner] : this.L.candidates[p.winner] + ' ' + p.winPct + '%');
+      ctx.fillText(winLabel, midX - (isNarrow ? 14 : 24), y + rowH * 0.6);
 
       // VS
       ctx.textAlign = 'center';
-      ctx.font = '500 ' + Math.max(11, W * 0.018) + 'px ' + font;
+      ctx.font = '500 ' + Math.max(10, fontSize * 0.8) + 'px ' + font;
       ctx.fillStyle = this.isLight ? 'rgba(30,58,107,0.45)' : 'rgba(255,255,255,0.4)';
       ctx.fillText(this.L.vs, midX, y + rowH * 0.6);
 
       // Loser side
-      ctx.font = '600 ' + Math.max(14, W * 0.024) + 'px ' + font;
+      ctx.font = '600 ' + fontSize + 'px ' + font;
       ctx.textAlign = 'left';
       ctx.fillStyle = this.isLight ? 'rgba(30,58,107,0.55)' : 'rgba(255,255,255,0.45)';
-      ctx.fillText(p.losePct + '% ' + this.L.candidates[p.loser], midX + 24, y + rowH * 0.6);
+      var loseLabel = isNarrow
+        ? (this.isFA ? this.L.candidatesShort[p.loser] + ' ٪' + toFaNum(p.losePct) : p.losePct + '% ' + this.L.candidatesShort[p.loser])
+        : (this.isFA ? this.L.candidates[p.loser] + ' ٪' + toFaNum(p.losePct) : p.losePct + '% ' + this.L.candidates[p.loser]);
+      ctx.fillText(loseLabel, midX + (isNarrow ? 14 : 24), y + rowH * 0.6);
 
       // Margin indicator bar
-      var barMaxW = Math.min(120, W * 0.16);
+      var barMaxW = Math.min(isNarrow ? 80 : 120, W * 0.16);
       var barW = barMaxW * (p.margin / 66) * appear; // 66 is max margin
       ctx.fillStyle = hexRGBA(CAND_COLORS[p.winner], 0.35);
       ctx.strokeStyle = 'transparent'; ctx.lineWidth = 0;
@@ -626,11 +658,11 @@
   RankedPairsAnim.prototype._drawSort = function (ctx, W, H, font) {
     this.statusEl.textContent = this.L.stepSort;
     var t = this.phaseT;
+    var isNarrow = W < 400;
 
     var pairs = this.pairs;
-    var rowH = Math.min(48, (H - 30) / pairs.length);
+    var rowH = Math.min(isNarrow ? 36 : 48, (H - 30) / pairs.length);
     var startY = (H - pairs.length * rowH) / 2;
-    var isNarrow = W < 520;
 
     for (var i = 0; i < pairs.length; i++) {
       var p = pairs[i];
@@ -642,39 +674,41 @@
 
       if (this.isFA) {
         // FA RTL: rank far-right, matchup right-center, bar left-center, margin far-left
+        var faFontSize = isNarrow ? Math.max(11, W * 0.030) : Math.max(14, W * 0.024);
+
         // Rank
-        ctx.font = '800 ' + Math.max(14, W * 0.024) + 'px ' + font;
+        ctx.font = '800 ' + faFontSize + 'px ' + font;
         ctx.textAlign = 'right';
         ctx.fillStyle = 'rgba(30,58,107,0.6)';
-        ctx.fillText('#' + (i + 1), W * 0.97, y + rowH * 0.6);
+        ctx.fillText('#' + (this.isFA ? toFaNum(i + 1) : (i + 1)), W * 0.97, y + rowH * 0.6);
 
         // Matchup
-        ctx.font = '700 ' + Math.max(14, W * 0.024) + 'px ' + font;
+        ctx.font = '700 ' + faFontSize + 'px ' + font;
         ctx.textAlign = 'center';
         ctx.fillStyle = CAND_COLORS[p.winner];
-        ctx.fillText(this.L.candidatesShort[p.winner] + ' → ' + this.L.candidatesShort[p.loser], W * 0.72, y + rowH * 0.6);
+        ctx.fillText(this.L.candidatesShort[p.winner] + ' → ' + this.L.candidatesShort[p.loser], isNarrow ? W * 0.62 : W * 0.72, y + rowH * 0.6);
 
         // Margin bar
-        var barMaxW = Math.min(140, W * 0.22);
+        var barMaxW = Math.min(isNarrow ? 80 : 140, W * 0.22);
         var barW = barMaxW * (p.margin / 66);
         ctx.fillStyle = hexRGBA(CAND_COLORS[p.winner], isHighlighted ? 0.5 : 0.22);
         ctx.strokeStyle = 'transparent'; ctx.lineWidth = 0;
-        this._roundRect(ctx, W * 0.22 + (barMaxW - barW), y + rowH * 0.28, barW, rowH * 0.38, 4);
+        this._roundRect(ctx, (isNarrow ? W * 0.12 : W * 0.22) + (barMaxW - barW), y + rowH * 0.28, barW, rowH * 0.38, 4);
 
         // Margin label
-        ctx.font = '600 ' + Math.max(12, W * 0.02) + 'px ' + font;
+        ctx.font = '600 ' + Math.max(10, W * 0.02) + 'px ' + font;
         ctx.fillStyle = CAND_COLORS[p.winner];
         ctx.textAlign = 'right';
-        ctx.fillText(this.L.margin + ' ' + p.margin, W * 0.14, y + rowH * 0.6);
+        ctx.fillText(isNarrow ? '' + (this.isFA ? toFaNum(p.margin) : p.margin) : (this.isFA ? this.L.margin + ' ' + toFaNum(p.margin) : this.L.margin + ' ' + p.margin), isNarrow ? W * 0.08 : W * 0.14, y + rowH * 0.6);
       } else {
         // EN LTR: rank far-left, matchup left-of-center, bar right-of-center, margin far-right
-        var fontSize = isNarrow ? Math.max(12, W * 0.026) : Math.max(15, W * 0.024);
+        var fontSize = isNarrow ? Math.max(11, W * 0.030) : Math.max(15, W * 0.024);
 
         // Rank
         ctx.font = '800 ' + fontSize + 'px ' + font;
         ctx.textAlign = 'left';
         ctx.fillStyle = this.isLight ? 'rgba(30,58,107,0.55)' : 'rgba(255,255,255,0.55)';
-        ctx.fillText('#' + (i + 1), W * 0.02, y + rowH * 0.6);
+        ctx.fillText('#' + (this.isFA ? toFaNum(i + 1) : (i + 1)), W * 0.02, y + rowH * 0.6);
 
         // Matchup — positioned further right to avoid rank overlap
         ctx.font = '700 ' + fontSize + 'px ' + font;
@@ -694,7 +728,7 @@
         ctx.font = '600 ' + Math.max(12, W * 0.02) + 'px ' + font;
         ctx.fillStyle = CAND_COLORS[p.winner];
         ctx.textAlign = 'left';
-        ctx.fillText(p.margin, barX + barW + 8, y + rowH * 0.6);
+        ctx.fillText(this.isFA ? toFaNum(p.margin) : p.margin, barX + barW + 8, y + rowH * 0.6);
       }
     }
     ctx.globalAlpha = 1;
@@ -704,12 +738,13 @@
   RankedPairsAnim.prototype._drawLock = function (ctx, W, H, font) {
     this.statusEl.textContent = this.L.stepLock;
     var t = this.phaseT;
+    var isNarrow = W < 400;
 
     // Graph node positions (arranged in a diamond/circle)
     // Shift graph over to make room for side list
-    // For FA: graph right, list left. For EN: graph right, list left.
-    var cx = this.isFA ? W * 0.58 : W * 0.65, cy = H * 0.5;
-    var R = Math.min(W * 0.20, H * 0.28);
+    var cx = isNarrow ? W * 0.58 : (this.isFA ? W * 0.58 : W * 0.65);
+    var cy = H * 0.5;
+    var R = Math.min(isNarrow ? W * 0.22 : W * 0.20, H * 0.28);
 
     var angles = [
       -Math.PI / 2,       // top
@@ -828,10 +863,9 @@
     ctx.textBaseline = 'alphabetic';
 
     // Side list showing lock order
-    // For FA: put list on LEFT side with left-align to avoid graph collision
-    // For EN: put list on LEFT side with left-align
-    var listX = this.isFA ? W * 0.02 : W * 0.03;
-    var listRowH = Math.min(28, (H - 30) / this.locked.length);
+    var listX = W * 0.02;
+    var listFontSize = isNarrow ? Math.max(9, W * 0.024) : Math.max(11, W * 0.017);
+    var listRowH = Math.min(isNarrow ? 22 : 28, (H - 30) / this.locked.length);
     var listY = (H - this.locked.length * listRowH) / 2;
 
     for (var li = 0; li <= Math.min(doneEdges, this.locked.length - 1); li++) {
@@ -839,7 +873,7 @@
       var lp = le.pair;
       var ly = listY + li * listRowH;
 
-      ctx.font = '600 ' + Math.max(11, W * 0.017) + 'px ' + font;
+      ctx.font = '600 ' + listFontSize + 'px ' + font;
       ctx.textAlign = 'left';
 
       if (le.status === 'lock') {
@@ -898,7 +932,7 @@
       var rankStr = ranking.map(function (idx) { return this.L.candidatesShort[idx]; }.bind(this)).join(' > ');
       ctx.font = '500 ' + Math.max(13, W * 0.022) + 'px ' + font;
       ctx.fillStyle = this.isLight ? 'rgba(30,58,107,0.5)' : 'rgba(255,255,255,0.4)';
-      ctx.fillText(rankStr, cx, cy + 60);
+      ctx.fillText(rankStr, cx, cy + 80);
     }
 
     ctx.globalAlpha = 1;

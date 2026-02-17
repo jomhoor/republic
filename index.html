@@ -181,7 +181,7 @@
           <div class="step__content">
             <div class="step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="12" x="2" y="6" rx="1"/><path d="M13 8.32a7.43 7.43 0 0 1 0 7.36"/><path d="M16.46 6.21a11.76 11.76 0 0 1 0 11.58"/><path d="M19.91 4.1a15.91 15.91 0 0 1 0 15.8"/></svg></div>
             <h3 class="step__title">Generate Your Cryptographic Civic Identity</h3>
-            <p class="step__desc">Use your Iranian National ID Card or Biometric Passport to generate a ZKP key pair via the <a href="https://github.com/Iranians-Vote-Digital-Democracy/INIDOSDK" target="_blank">INID SDK</a> and <a href="https://rarimo.com/#zk-passport" target="_blank">ZK Passport (Rarimo)</a>. Prove you're a unique Iranian citizen without revealing your name, location, or any personal details.</p>
+            <p class="step__desc">Use your Iranian National ID Card or Biometric Passport to generate a ZKP key pair via the <a href="https://github.com/Iranians-Vote-Digital-Democracy/INIDOSDK" target="_blank">INID SDK</a> and <a href="https://docs.rarimo.com/zk-passport/" target="_blank">ZK Passport (Rarimo)</a>. Identity proofs are stored on-chain via <a href="https://eips.ethereum.org/EIPS/eip-7812" target="_blank">ERC-7812</a>. Prove you're a unique Iranian citizen without revealing your name, location, or any personal details.</p>
           </div>
         </div>
 
@@ -201,7 +201,7 @@
           <div class="step__content">
             <div class="step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="3" y1="22" y2="12"/><line x1="9" x2="9" y1="22" y2="8"/><line x1="15" x2="15" y1="22" y2="12"/><line x1="21" x2="21" y1="22" y2="8"/><path d="M2 22h20"/><path d="M12 2l10 6H2l10-6z"/></svg></div>
             <h3 class="step__title">Deliberate on Agora Polis</h3>
-            <p class="step__desc">Join <a href="https://www.agoracitizen.network/" target="_blank">Agora Polis</a> — write your opinion, agree or disagree with others' statements, and an algorithm maps the real clusters of consensus. The result is not a binary — it is a map.</p>
+            <p class="step__desc">Join <a href="https://www.agoracitizen.network/" target="_blank">Agora Polis</a> — write your opinion, agree or disagree with others' statements, and an algorithm maps the real clusters of consensus. The result is not a binary — it is a map. <a href="https://arxiv.org/pdf/2306.11932" target="_blank">Read the Polis whitepaper</a>.</p>
           </div>
         </div>
 
@@ -211,7 +211,7 @@
           <div class="step__content">
             <div class="step__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 12 11 14 15 10"/><path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"/><path d="M22 19H2"/></svg></div>
             <h3 class="step__title">Vote Anonymously via Rarimo</h3>
-            <p class="step__desc">Issues from deliberation go to anonymous, verifiable vote on <a href="https://rarimo.com/" target="_blank">Rarimo</a> via <a href="https://iranians.vote/" target="_blank">Iranians.Vote</a>. Each voter proves membership without revealing identity. Support for Approval Voting and Ranked Pairs (Tideman).</p>
+            <p class="step__desc">Issues from deliberation go to anonymous, verifiable vote via the <a href="https://docs.rarimo.com/freedom-tool/" target="_blank">Freedom Tool</a> on <a href="https://rarimo.com/" target="_blank">Rarimo</a> through <a href="https://iranians.vote/" target="_blank">Iranians.Vote</a>. Each voter proves membership without revealing identity. Support for Approval Voting and Ranked Pairs (Tideman).</p>
           </div>
         </div>
 
@@ -229,73 +229,244 @@
     </div>
   </section>
 
-  <!-- ZK Identity Section -->
+  <!-- ZK Identity Carousel Section -->
   <section class="section" id="identity">
     <div class="container">
-      <div class="feature-split">
-        <div class="feature-split__content" data-animate>
-          <span class="section__label">ZK Identity</span>
-          <h2 class="section__title">INID SDK — Open SDK for Iranian National Identity Card</h2>
-          <p class="feature-split__text">More than 63 million Iranians hold the Iranian National Identity smart card. The INID SDK creates zero-knowledge proofs of identity using the NID card's NFC chip — offline, on standard mobile phones.</p>
-          <ul class="feature-list">
-            <li>
-              <span class="feature-list__icon">✓</span>
-              Reverse-engineered Matiran SDK — comprehensive report published
-            </li>
-            <li>
-              <span class="feature-list__icon">✓</span>
-              Read X509 certificates, CSN, CRN, AFIS, personal info, SOD
-            </li>
-            <li>
-              <span class="feature-list__icon">✓</span>
-              Certificate chain validation for Iranian PKI
-            </li>
-            <li>
-              <span class="feature-list__icon">✓</span>
-              Mobile companion apps for Android and iOS
-            </li>
-            <li>
-              <span class="feature-list__icon">✓</span>
-              AGPL-3.0 — fully open source
-            </li>
-          </ul>
-          <div class="feature-split__actions">
-            <a href="https://github.com/Iranians-Vote-Digital-Democracy/INIDOSDK" target="_blank" class="btn btn--primary">
-              View on GitHub
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <a href="https://play.google.com/store/apps/details?id=vote.iranians.inid_assistant" target="_blank" class="btn btn--ghost">
-              INID Assistant App
-            </a>
+      <div class="id-carousel" data-animate>
+        <div class="id-carousel__track">
+
+          <!-- Slide 1: INID SDK -->
+          <div class="id-carousel__slide id-carousel__slide--active" data-slide="0">
+            <div class="feature-split">
+              <div class="feature-split__content">
+                <span class="section__label">ZK Identity</span>
+                <h2 class="section__title">INID SDK — Open SDK for Iranian National Identity Card</h2>
+                <p class="feature-split__text">More than 63 million Iranians hold the Iranian National Identity smart card. The INID SDK creates zero-knowledge proofs of identity using the NID card's NFC chip — offline, on standard mobile phones.</p>
+                <ul class="feature-list">
+                  <li><span class="feature-list__icon">✓</span>Reverse-engineered Matiran SDK — comprehensive report published</li>
+                  <li><span class="feature-list__icon">✓</span>Read X509 certificates, CSN, CRN, AFIS, personal info, SOD</li>
+                  <li><span class="feature-list__icon">✓</span>Certificate chain validation for Iranian PKI</li>
+                  <li><span class="feature-list__icon">✓</span>Mobile companion apps for Android and iOS</li>
+                  <li><span class="feature-list__icon">✓</span>AGPL-3.0 — fully open source</li>
+                </ul>
+                <div class="feature-split__actions">
+                  <a href="https://github.com/Iranians-Vote-Digital-Democracy/INIDOSDK" target="_blank" class="btn btn--primary">
+                    View on GitHub
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <a href="https://play.google.com/store/apps/details?id=vote.iranians.inid_assistant" target="_blank" class="btn btn--ghost">INID Assistant App</a>
+                </div>
+              </div>
+              <div class="feature-split__visual">
+                <div class="identity-card">
+                  <div class="identity-card__header">
+                    <span class="identity-card__chip"></span>
+                    <span class="identity-card__label">Zero-Knowledge Proof</span>
+                  </div>
+                  <div class="identity-card__body">
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Citizen Status</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Name</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">NID Number</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">██████████</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Location</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
+                    </div>
+                  </div>
+                  <div class="identity-card__footer">
+                    <code>ZKP: The system knows you're a real, unique Iranian citizen, but cannot identify who you are.</code>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- Slide 2: ZK Passport (Rarimo) -->
+          <div class="id-carousel__slide" data-slide="1">
+            <div class="feature-split">
+              <div class="feature-split__content">
+                <span class="section__label">ZK Passport</span>
+                <h2 class="section__title">ZK Passport — Biometric Passports as ZK Credentials</h2>
+                <p class="feature-split__text">Rarimo's ZK Passport turns biometric passports into privacy-preserving credentials. Scan your passport's NFC chip and generate a zero-knowledge proof of citizenship — no personal data leaves your device.</p>
+                <ul class="feature-list">
+                  <li><span class="feature-list__icon">✓</span>Scan passport NFC chip → generate ZK proof of citizenship</li>
+                  <li><span class="feature-list__icon">✓</span>Light mode (citizenship only) and full mode (all attributes)</li>
+                  <li><span class="feature-list__icon">✓</span>Privacy network effect — larger anonymity sets defeat dictionary attacks</li>
+                  <li><span class="feature-list__icon">✓</span>Open-source ZK circuits (Circom &amp; Noir implementations)</li>
+                  <li><span class="feature-list__icon">✓</span>Works offline on standard mobile phones</li>
+                </ul>
+                <div class="feature-split__actions">
+                  <a href="https://docs.rarimo.com/zk-passport/" target="_blank" class="btn btn--primary">
+                    ZK Passport Docs
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <a href="https://github.com/rarimo/passport-zk-circuits" target="_blank" class="btn btn--ghost">ZK Circuits</a>
+                </div>
+              </div>
+              <div class="feature-split__visual">
+                <div class="identity-card">
+                  <div class="identity-card__header">
+                    <span class="identity-card__chip"></span>
+                    <span class="identity-card__label">Passport ZK Proof</span>
+                  </div>
+                  <div class="identity-card__body">
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Nationality</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Uniqueness</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Passport No.</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">██████████</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Biometrics</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
+                    </div>
+                  </div>
+                  <div class="identity-card__footer">
+                    <code>Scan → Prove → Vote. Your passport never leaves your hands.</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: ERC-7812 Identity Registry -->
+          <div class="id-carousel__slide" data-slide="2">
+            <div class="feature-split">
+              <div class="feature-split__content">
+                <span class="section__label">ERC-7812</span>
+                <h2 class="section__title">ZK Identity Registry — On-Chain Provable Statements</h2>
+                <p class="feature-split__text">ERC-7812 defines a singleton on-chain registry for storing provable identity statements. Co-authored by Vitalik Buterin, it uses Sparse Merkle Trees with Poseidon hashing for gas-efficient, cross-chain portable identity proofs.</p>
+                <ul class="feature-list">
+                  <li><span class="feature-list__icon">✓</span>Singleton registry at a deterministic address across all EVM chains</li>
+                  <li><span class="feature-list__icon">✓</span>Sparse Merkle Tree with Poseidon hash for ZK-friendliness</li>
+                  <li><span class="feature-list__icon">✓</span>Registrars implement customizable verification logic</li>
+                  <li><span class="feature-list__icon">✓</span>Cross-chain portability — prove identity anywhere</li>
+                  <li><span class="feature-list__icon">✓</span>EIP status: Draft — actively evolving standard</li>
+                </ul>
+                <div class="feature-split__actions">
+                  <a href="https://eips.ethereum.org/EIPS/eip-7812" target="_blank" class="btn btn--primary">
+                    Read EIP-7812
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <a href="https://docs.rarimo.com/zk-passport/" target="_blank" class="btn btn--ghost">Reference Implementation</a>
+                </div>
+              </div>
+              <div class="feature-split__visual">
+                <div class="identity-card identity-card--registry">
+                  <div class="identity-card__header">
+                    <span class="identity-card__chip"></span>
+                    <span class="identity-card__label">Evidence Registry</span>
+                  </div>
+                  <div class="identity-card__body">
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Registry</span>
+                      <span class="identity-card__field-value" style="font-family: monospace; font-size: 0.7rem; color: var(--accent-secondary);">0x7812...7812</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">SMT Root</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Valid</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Registrar</span>
+                      <span class="identity-card__field-value" style="font-size: 0.8rem; color: var(--text-secondary);">Passport Verifier</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Cross-Chain</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Portable</span>
+                    </div>
+                  </div>
+                  <div class="identity-card__footer">
+                    <code>A universal identity layer for Ethereum — deterministic, verifiable, cross-chain.</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4: Freedom Tool -->
+          <div class="id-carousel__slide" data-slide="3">
+            <div class="feature-split">
+              <div class="feature-split__content">
+                <span class="section__label">Freedom Tool</span>
+                <h2 class="section__title">Freedom Tool — Decentralized Voting Infrastructure</h2>
+                <p class="feature-split__text">Rarimo's Freedom Tool combines biometric passports, ZK proofs, and smart contracts into a complete anonymous voting system. Already used by Iranians Vote, Russia2024, and United Space — battle-tested in real political contexts.</p>
+                <ul class="feature-list">
+                  <li><span class="feature-list__icon">✓</span>End-to-end anonymous voting with biometric passport verification</li>
+                  <li><span class="feature-list__icon">✓</span>Used by Iranians.Vote, Russia2024, United Space projects</li>
+                  <li><span class="feature-list__icon">✓</span>Mobile apps + smart contracts + ZK circuits — full stack</li>
+                  <li><span class="feature-list__icon">✓</span>Open-source — anyone can deploy for their own context</li>
+                  <li><span class="feature-list__icon">✓</span>No central authority — results are cryptographically verifiable</li>
+                </ul>
+                <div class="feature-split__actions">
+                  <a href="https://docs.rarimo.com/freedom-tool/" target="_blank" class="btn btn--primary">
+                    Freedom Tool Docs
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <a href="https://freedomtool.org/#/whitepaper" target="_blank" class="btn btn--ghost">Whitepaper</a>
+                  <a href="https://iranians.vote/" target="_blank" class="btn btn--ghost">Iranians.Vote</a>
+                </div>
+              </div>
+              <div class="feature-split__visual">
+                <div class="identity-card identity-card--freedom">
+                  <div class="identity-card__header">
+                    <span class="identity-card__chip"></span>
+                    <span class="identity-card__label">Anonymous Ballot</span>
+                  </div>
+                  <div class="identity-card__body">
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Voter Identity</span>
+                      <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Eligibility</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">Vote Cast</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Recorded</span>
+                    </div>
+                    <div class="identity-card__field">
+                      <span class="identity-card__field-label">On-Chain Proof</span>
+                      <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
+                    </div>
+                  </div>
+                  <div class="identity-card__footer">
+                    <code>Your vote counts. Your identity stays hidden. Cryptographic proof guarantees both.</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="feature-split__visual" data-animate>
-          <div class="identity-card">
-            <div class="identity-card__header">
-              <span class="identity-card__chip"></span>
-              <span class="identity-card__label">Zero-Knowledge Proof</span>
-            </div>
-            <div class="identity-card__body">
-              <div class="identity-card__field">
-                <span class="identity-card__field-label">Citizen Status</span>
-                <span class="identity-card__field-value identity-card__field-value--verified">✓ Verified</span>
-              </div>
-              <div class="identity-card__field">
-                <span class="identity-card__field-label">Name</span>
-                <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
-              </div>
-              <div class="identity-card__field">
-                <span class="identity-card__field-label">NID Number</span>
-                <span class="identity-card__field-value identity-card__field-value--hidden">██████████</span>
-              </div>
-              <div class="identity-card__field">
-                <span class="identity-card__field-label">Location</span>
-                <span class="identity-card__field-value identity-card__field-value--hidden">████████</span>
-              </div>
-            </div>
-            <div class="identity-card__footer">
-              <code>ZKP: The system knows you're a real, unique Iranian citizen, but cannot identify who you are.</code>
-            </div>
+
+        <!-- Carousel Navigation -->
+        <div class="id-carousel__nav">
+          <div class="id-carousel__dots">
+            <button class="id-carousel__dot id-carousel__dot--active" data-goto="0" aria-label="INID SDK"></button>
+            <button class="id-carousel__dot" data-goto="1" aria-label="ZK Passport"></button>
+            <button class="id-carousel__dot" data-goto="2" aria-label="ERC-7812"></button>
+            <button class="id-carousel__dot" data-goto="3" aria-label="Freedom Tool"></button>
+          </div>
+          <div class="id-carousel__labels">
+            <button class="id-carousel__label id-carousel__label--active" data-goto="0">INID SDK</button>
+            <button class="id-carousel__label" data-goto="1">ZK Passport</button>
+            <button class="id-carousel__label" data-goto="2">ERC-7812</button>
+            <button class="id-carousel__label" data-goto="3">Freedom Tool</button>
           </div>
         </div>
       </div>
@@ -333,6 +504,9 @@
               Explore Agora
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
+            <a href="https://arxiv.org/pdf/2306.11932" target="_blank" class="btn btn--ghost">
+              Polis Whitepaper
+            </a>
             <a href="https://www.agoracitizen.app/" target="_blank" class="btn btn--ghost">
               Join a Conversation
             </a>
@@ -367,7 +541,7 @@
             <li><strong>Lock:</strong> Going down the list, each victory is "locked" into a directed graph — unless it would create a cycle.</li>
             <li><strong>Winner:</strong> The candidate with no incoming edges (the source) wins.</li>
           </ol>
-          <p class="rp-note">Implementation: <a href="https://github.com/hakai-vulpes/ranked-pairs-voting" target="_blank" rel="noopener">hakai-vulpes/ranked-pairs-voting</a></p>
+          <p class="rp-note">Implementation: <a href="https://github.com/pivot-libre/tideman" target="_blank" rel="noopener">pivot-libre/tideman</a></p>
         </div>
       </div>
     </div>
