@@ -721,6 +721,187 @@ img {
 }
 
 /* ========================================
+   Agora Terminal Demo (FA)
+   ======================================== */
+/* ── Terminal: CSS custom properties (dark default, light override) ── */
+.agora-term {
+  --term-bg:        #0d0d0d;
+  --term-bar-bg:    #1a1a1a;
+  --term-border:    rgba(255,255,255,0.08);
+  --term-bar-sep:   rgba(255,255,255,0.07);
+  --term-title:     rgba(255,255,255,0.35);
+  --term-cursor:    rgba(140,218,245,0.7);
+  --term-prompt:    rgba(255,255,255,0.25);
+  --term-user:      rgba(255,255,255,0.55);
+  --term-cmd:       #8CDAF5;
+  --term-arg:       #E5C07B;
+  --term-ok:        #98C379;
+  --term-flag:      #E06C75;
+  --term-dim:       rgba(255,255,255,0.22);
+  --term-ref:       rgba(140,218,245,0.55);
+  --term-sep:       rgba(255,255,255,0.10);
+
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--term-border);
+  background: var(--term-bg);
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Menlo', monospace;
+  font-size: clamp(0.65rem, 1.8vw, 0.78rem);
+  /* Hard-lock the dimensions — nothing inside can shift the page layout */
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* FA: default is light — terminal is always dark but softens in light mode */
+.agora-term {
+  --term-bg:        #0f1117;
+  --term-bar-bg:    #1c1f26;
+  --term-border:    rgba(255,255,255,0.10);
+  --term-bar-sep:   rgba(255,255,255,0.07);
+}
+/* FA dark theme: slightly richer dark */
+[data-theme="dark"] .agora-term {
+  --term-bg:        #0d0d0d;
+  --term-bar-bg:    #1a1a1a;
+  --term-border:    rgba(255,255,255,0.08);
+  --term-bar-sep:   rgba(255,255,255,0.07);
+  --term-title:     rgba(255,255,255,0.35);
+  --term-cursor:    rgba(140,218,245,0.70);
+  --term-prompt:    rgba(255,255,255,0.25);
+  --term-user:      rgba(255,255,255,0.55);
+  --term-cmd:       #8CDAF5;
+  --term-arg:       #E5C07B;
+  --term-ok:        #98C379;
+  --term-flag:      #E06C75;
+  --term-dim:       rgba(255,255,255,0.22);
+  --term-ref:       rgba(140,218,245,0.55);
+  --term-sep:       rgba(255,255,255,0.10);
+}
+
+.agora-term__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--term-bar-bg);
+  border-bottom: 1px solid var(--term-bar-sep);
+  flex: 0 0 auto;
+  direction: ltr; /* dots always on left regardless of page direction */
+}
+.agora-term__dots {
+  display: flex;
+  gap: 6px;
+}
+.agora-term__dots span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.agora-term__dots span:nth-child(1) { background: #FF5F57; }
+.agora-term__dots span:nth-child(2) { background: #FEBC2E; }
+.agora-term__dots span:nth-child(3) { background: #28C840; }
+.agora-term__title {
+  font-size: 0.70rem;
+  color: var(--term-title);
+  letter-spacing: 0.04em;
+  flex: 1;
+  text-align: center;
+}
+.agora-term__body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  direction: ltr;
+}
+/* lines: absolutely positioned — can NEVER affect page layout */
+.agora-term__lines {
+  position: absolute;
+  inset: 0;
+  bottom: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px 16px 0;
+}
+/* cursor blink */
+.agora-term__cursor {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  width: 7px;
+  height: 14px;
+  background: var(--term-cursor);
+  animation: term-blink 1.1s step-end infinite;
+}
+@keyframes term-blink { 0%,100%{ opacity:1; } 50%{ opacity:0; } }
+.term-line {
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  flex-shrink: 0;
+}
+.term-line--visible {
+  opacity: 1;
+  transform: none;
+}
+.t-prompt  { color: var(--term-prompt); }
+.t-user    { color: var(--term-user); }
+.t-cmd     { color: var(--term-cmd); }
+.t-arg     { color: var(--term-arg); }
+.t-ok      { color: var(--term-ok); }
+.t-flag    { color: var(--term-flag); }
+.t-dim     { color: var(--term-dim); }
+.t-ref     { color: var(--term-ref); }
+.t-sep     { color: var(--term-sep); }
+
+/* Responsive: allow wrapping on small screens */
+@media (max-width: 640px) {
+  .agora-term {
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+    font-size: 0.68rem;
+    border-radius: 8px;
+  }
+  .term-line {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-word;
+    line-height: 1.55;
+  }
+  .agora-term__lines {
+    padding: 8px 12px 0;
+  }
+}
+@media (max-width: 380px) {
+  .agora-term {
+    height: 300px;
+    min-height: 300px;
+    max-height: 300px;
+    font-size: 0.62rem;
+  }
+}
+
+.section--polis {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+/* ========================================
    Identity Carousel
    ======================================== */
 .id-carousel {
@@ -1797,7 +1978,7 @@ img {
     align-items: center;
     justify-content: center;
     gap: 24px;
-    z-index: 999;
+    z-index: 1001;
   }
 
   .nav__links.nav__links--open {
